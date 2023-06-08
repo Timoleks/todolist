@@ -5,7 +5,8 @@ namespace TodolistApi.Domain.Data
 {
     public sealed class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) {}
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) 
+            : base(options) {}
 
         public DbSet<TodoItem> TodoItems => Set<TodoItem>();
 

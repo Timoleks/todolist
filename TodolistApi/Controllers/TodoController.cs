@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TodolistApi.Domain.Models;
 using TodolistApi.Service.Repository;
 
 namespace TodolistApi.Controllers;
-
+[Authorize(Roles = "ADMIN")]
 [ApiController]
 [Route("[controller]/[action]")]
 public class TodoController : ControllerBase
