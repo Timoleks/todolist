@@ -1,14 +1,17 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
 using TodolistApi.Domain.Models;
 using TodolistApi.Service.Repository;
 
 namespace TodolistApi.Controllers;
+
 [Authorize(Roles = "ADMIN")]
 [ApiController]
 [Route("[controller]/[action]")]
 public class TodoController : ControllerBase
 {
+    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ILogger<TodoController> _logger;
     private readonly IRepository<TodoItem> _repository;
 
@@ -25,6 +28,9 @@ public class TodoController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> AddItem(string name)
     {
+        //var userId = _httpContextAccessor.HttpContext.User.FindFirst(JwtRegisteredClaimNames.Sub).Value;
+
+
         try
         {
             var todoItem = new TodoItem { Name = name };
@@ -56,6 +62,7 @@ public class TodoController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetItem(int id)
     {
+        var userId = _httpContextAccessor.HttpContext.User.FindFirst(JwtRegisteredClaimNames.Sub).Value;
 
         try
         {

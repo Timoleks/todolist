@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using System.IdentityModel.Tokens.Jwt;
 using TodolistApi.Domain.Data;
 using TodolistApi.Infrastructure.Data;
 using TodolistApi.Infrastructure.IdentityModels;
@@ -64,6 +65,7 @@ builder.Services.AddIdentity<User, IdentityRole>(options => {
     options.Password.RequireLowercase = false;
 }).AddEntityFrameworkStores<ApplicationIdentityDbContext>();
 
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddHostedService<IdentityRolesInitializer>();
 
 var app = builder.Build();
@@ -76,6 +78,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
