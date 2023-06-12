@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using TodolistApi.Domain.Models;
@@ -6,6 +7,7 @@ using TodolistApi.Service.Repository;
 
 namespace TodolistApi.Controllers;
 
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 [Authorize(Roles = "ADMIN")]
 [ApiController]
 [Route("[controller]/[action]")]

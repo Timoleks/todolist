@@ -14,12 +14,7 @@ namespace TodolistApi.Service.Extensions
 
         public static IServiceCollection AddJwtAuthorization(this IServiceCollection services)
         {
-            services.AddAuthentication(options =>
-                {
-                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                    
-                })
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
                     var secret = "SomeSecresadfsdafasdfasdfasdfasddfasdgasdfgadgsdafsadfasdfasdt";
@@ -41,6 +36,7 @@ namespace TodolistApi.Service.Extensions
                         IssuerSigningKey = key
                     };
                 });
+
             return services;
         }
     }
