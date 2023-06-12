@@ -6,6 +6,7 @@ using TodolistApi.Domain.Data;
 using TodolistApi.Infrastructure.Data;
 using TodolistApi.Infrastructure.IdentityModels;
 using TodolistApi.Service.Extensions;
+using TodolistApi.Service.HostedServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,7 +56,15 @@ builder.Services
 
 
 builder.Services.AddJwtAuthorization();
-builder.Services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<ApplicationIdentityDbContext>();
+builder.Services.AddIdentity<User, IdentityRole>(options => {
+    options.Password.RequireDigit = false;
+    options.Password.RequiredLength = 3;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireLowercase = false;
+}).AddEntityFrameworkStores<ApplicationIdentityDbContext>();
+
+builder.Services.AddHostedService<IdentityRolesInitializer>();
 
 var app = builder.Build();
 

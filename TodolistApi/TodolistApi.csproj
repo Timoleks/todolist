@@ -20,10 +20,14 @@
 
   <ItemGroup>
     <None Remove="Models\" />
+    <None Remove="HostedServices\" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\TodolistApi.Infrastructure\TodolistApi.Infrastructure.csproj" />
     <ProjectReference Include="..\TodolistApi.Service\TodolistApi.Service.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="HostedServices\" />
   </ItemGroup>
 </Project>

@@ -18,13 +18,14 @@ namespace TodolistApi.Service.Extensions
                 {
                     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                    
                 })
                 .AddJwtBearer(options =>
                 {
                     var secret = "SomeSecresadfsdafasdfasdfasdfasddfasdgasdfgadgsdafsadfasdfasdt";
                     var issuer = "KanyaFieldsIdentityProvider";
                     var audience = "KanyaFieldsUsers";
-
+                    
                     var publicKeyBytes = Encoding.UTF8.GetBytes(secret);
                     // TODO: Use asymmetric encryption or certificate
                     var key = new SymmetricSecurityKey(publicKeyBytes);

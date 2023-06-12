@@ -67,15 +67,13 @@ namespace TodolistApi.Controllers
         {
             var user = new User(username);
             var result = await _userManager.CreateAsync(user, password);
-            if (result.Succeeded)
+            if (result.Succeeded is false)
             {
-                return Ok();
+                return BadRequest(result.Errors);
             }
-
             await _userManager.AddClaimAsync(user, new Claim("MainCharacter", "Blight"));
             await _userManager.AddToRoleAsync(user, "ADMIN");
-
-            return BadRequest(result.Errors);
+            return Ok();
         }
     }
 }

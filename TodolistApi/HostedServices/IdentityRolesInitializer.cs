@@ -1,11 +1,24 @@
 ﻿using System;
+
 namespace TodolistApi.Service.HostedServices
 {
-	public class IdentityRolesInitializer
+	public class IdentityRolesInitializer : BackgroundService
 	{
-		public IdentityRolesInitializer()
-		{
-		}
-	}
+        private readonly ILogger<IdentityRolesInitializer> _logger;
+
+        public IdentityRolesInitializer(ILogger<IdentityRolesInitializer> logger)
+        {
+            _logger = logger;
+            
+        }
+
+        
+
+        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            _logger.LogError("start");
+            return Task.CompletedTask;
+        }
+    }
 }
 
