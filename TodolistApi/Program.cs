@@ -79,6 +79,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// Known issue: https://github.com/IdentityServer/IdentityServer4/issues/2968#issuecomment-510996164
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 app.UseAuthentication();
 
 app.UseAuthorization();

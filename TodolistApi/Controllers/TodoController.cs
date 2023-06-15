@@ -30,12 +30,15 @@ public class TodoController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> AddItem(string name)
     {
-        //var userId = _httpContextAccessor.HttpContext.User.FindFirst(JwtRegisteredClaimNames.Sub).Value;
-
+        var userId = HttpContext.User.Identities
+            .FirstOrDefault()
+            .Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sub).Value;
+        
 
         try
         {
             var todoItem = new TodoItem { Name = name };
+            todoItem.UserID = userId;
             _repository.Insert(todoItem);
             await _repository.SaveChangesAsync();
             return NoContent();

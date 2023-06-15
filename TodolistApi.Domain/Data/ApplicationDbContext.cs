@@ -24,7 +24,10 @@ namespace TodolistApi.Domain.Data
                .Entity<TodoItem>()
                .Property(ti => ti.IsDone)
                .HasDefaultValue(false);
-
+            modelBuilder
+                .Entity<TodoItem>()
+                .Property(ti => ti.UserID);
+                
             base.OnModelCreating(modelBuilder);
         }
     }
