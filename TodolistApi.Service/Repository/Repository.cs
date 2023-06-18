@@ -8,8 +8,8 @@ namespace TodolistApi.Service.Repository
     {
         private readonly ApplicationDbContext _context;
         private readonly DbSet<T> _dbSet;
-     
-
+        
+        
         public Repository(ApplicationDbContext context)
         {
             ArgumentNullException.ThrowIfNull(context);
@@ -25,6 +25,15 @@ namespace TodolistApi.Service.Repository
             .Where(record => record.Id == id)
             .ToArray()
             .SingleOrDefault();
+        public T? Get(int id,string userId) => _dbSet
+            .Where(record => record.Id == id && userId == record.UserID)
+            .ToArray()
+            .SingleOrDefault();
+        public T[] Get(string userId) => _dbSet
+            .Where(record => userId == record.UserID)
+            .ToArray();
+            
+            
 
         public void Insert(T record)
         {

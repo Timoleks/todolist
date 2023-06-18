@@ -24,41 +24,53 @@ namespace TodolistApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(string username, string password)
         {
-            if (username == "username" && password == "password")
+            var user = await _userManager.FindByNameAsync(username);
+
+            if (user is null)
             {
-                var claims = new Claim[]
-                {
-                    new(JwtRegisteredClaimNames.Sub, "f8f7d5e9-21df-4b01-82c7-23decd1a57a8"),
-                    new(ClaimTypes.Role, "ADMIN"),
-                    new("MainCharacter", "Blight"),
-                    new("Name", "Yevhenii"),
-                    new(JwtRegisteredClaimNames.Email, "example@example.com")
-                };
-
-                var secret = "SomeSecresadfsdafasdfasdfasdfasddfasdgasdfgadgsdafsadfasdfasdt";
-                var issuer = "KanyaFieldsIdentityProvider";
-                var audience = "KanyaFieldsUsers";
-
-                var secretBytes = Encoding.UTF8.GetBytes(secret);
-                var key = new SymmetricSecurityKey(secretBytes);
-                var algorithm = SecurityAlgorithms.HmacSha256;
-
-                var signingCredentials = new SigningCredentials(key, algorithm);
-
-                var token = new JwtSecurityToken(
-                    issuer,
-                    audience,
-                    claims,
-                    notBefore: DateTime.Now,
-                    expires: DateTime.Now.AddHours(1),
-                    signingCredentials);
-
-                var tokenJson = new JwtSecurityTokenHandler().WriteToken(token);
-
-                return Ok(tokenJson);
+                _logger.LogInformation("User does not exists");
+                return BadRequest("user does not exists");
             }
 
-            return Unauthorized();
+            if (await _userManager.CheckPasswordAsync(user, password) is false)
+            {
+                _logger.LogInformation("Password incorrect");
+                return BadRequest("Password incorrect");
+            }
+
+            var claims = await _userManager.GetClaimsAsync(user);
+            var roles = await _userManager.GetRolesAsync(user);
+
+            //var claims2 = roles.Select(role => new Claim(ClaimTypes.Role, role));
+            foreach (var role in roles)
+            {
+                Claim claim = new Claim(ClaimTypes.Role, role);
+                claims.Add(claim);
+            }
+
+            claims.Add(new Claim(JwtRegisteredClaimNames.Sub, user.Id));
+
+            var secret = "SomeSecresadfsdafasdfasdfasdfasddfasdgasdfgadgsdafsadfasdfasdt";
+            var issuer = "KanyaFieldsIdentityProvider";
+            var audience = "KanyaFieldsUsers";
+
+            var secretBytes = Encoding.UTF8.GetBytes(secret);
+            var key = new SymmetricSecurityKey(secretBytes);
+            var algorithm = SecurityAlgorithms.HmacSha256;
+
+            var signingCredentials = new SigningCredentials(key, algorithm);
+
+            var token = new JwtSecurityToken(
+                issuer,
+                audience,
+                claims,
+                notBefore: DateTime.Now,
+                expires: DateTime.Now.AddHours(1),
+                signingCredentials);
+
+            var tokenJson = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return Ok(tokenJson);
         }
 
 
@@ -67,15 +79,14 @@ namespace TodolistApi.Controllers
         {
             var user = new User(username);
             var result = await _userManager.CreateAsync(user, password);
-            if (result.Succeeded)
+            if (result.Succeeded is false)
             {
-                return Ok();
+                return BadRequest(result.Errors);
             }
-
             await _userManager.AddClaimAsync(user, new Claim("MainCharacter", "Blight"));
             await _userManager.AddToRoleAsync(user, "ADMIN");
 
-            return BadRequest(result.Errors);
+            return Ok();
         }
     }
 }

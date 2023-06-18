@@ -1,9 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
 using TodolistApi.Domain.Models;
 using TodolistApi.Service.Repository;
 
 namespace TodolistApi.Controllers;
+
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 [Authorize(Roles = "ADMIN")]
 [ApiController]
 [Route("[controller]/[action]")]
@@ -25,12 +29,18 @@ public class TodoController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> AddItem(string name)
     {
+        var userId = HttpContext.User.Identities
+            .FirstOrDefault()
+            .Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sub).Value;
+        
+
         try
         {
             var todoItem = new TodoItem { Name = name };
+            todoItem.UserID = userId;
             _repository.Insert(todoItem);
             await _repository.SaveChangesAsync();
-            return NoContent();
+            return Ok(todoItem.Id);
         }
         catch(Exception ex) 
         {
@@ -44,7 +54,12 @@ public class TodoController : ControllerBase
     {
         try
         {
-            return Ok(_repository.Get().Take(5000));
+            var userId = HttpContext.User.Identities
+            .FirstOrDefault()
+            .Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sub).Value;
+
+
+            return Ok(_repository.Get(userId).Take(5000));
         }
         catch (Exception ex)
         {
@@ -56,10 +71,13 @@ public class TodoController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetItem(int id)
     {
+        var UserID = HttpContext.User.Identities
+            .FirstOrDefault()
+            .Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sub).Value;
 
         try
         {
-            var item = _repository.Get(id);
+            var item = _repository.Get(id,UserID);
             return 
                 item == null
                     ? NotFound() 
@@ -72,12 +90,18 @@ public class TodoController : ControllerBase
         }
     }
 
+    
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteItem(int id)
     {
         try
         {
-            var item = _repository.Get(id);
+            var UserID = HttpContext.User.Identities
+            .FirstOrDefault()
+            .Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sub).Value;
+
+            var item = _repository.Get(id, UserID);
             if (item is null)
                 return NotFound();
 
@@ -93,14 +117,18 @@ public class TodoController : ControllerBase
     }
 
     [HttpPut]
-    public async Task<IActionResult> Update(int id, string name)
+    public async Task<IActionResult> Update(int id, string newName)
     {
         try
         {
-            var item = _repository.Get(id);
+            var UserID = HttpContext.User.Identities
+            .FirstOrDefault()
+            .Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sub).Value;
+
+            var item = _repository.Get(id,UserID);
             if (item is null)
                 return NotFound();
-            item.Name = name;
+            item.Name = newName;
             _repository.Update(item);
             await _repository.SaveChangesAsync();
             return NoContent();
