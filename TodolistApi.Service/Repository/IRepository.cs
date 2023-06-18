@@ -7,6 +7,8 @@ namespace TodolistApi.Service.Repository
     {
         IQueryable<T> Get();
         T? Get(int id);
+        T? Get(int id, string userId);
+        T[] Get(string userId);
         void Insert(T record);
         void Update(T record);
         void Delete(T record);
