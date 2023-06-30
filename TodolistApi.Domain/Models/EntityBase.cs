@@ -7,6 +7,6 @@ namespace TodolistApi.Domain.Models
         [Key]
         public int Id { get; set; }
 
-        public string UserID { get; set; }
+        
     }
 }

@@ -9,6 +9,10 @@ namespace TodolistApi.Domain.Data
             : base(options) {}
 
         public DbSet<TodoItem> TodoItems => Set<TodoItem>();
+        public DbSet<Day> Days => Set<Day>();
+        public DbSet<User> Users => Set<User>(); 
+
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -25,9 +29,21 @@ namespace TodolistApi.Domain.Data
                .Property(ti => ti.IsDone)
                .HasDefaultValue(false);
             modelBuilder
-                .Entity<TodoItem>()
-                .Property(ti => ti.UserID);
-                
+               .Entity<Day>()
+               .Property(ti => ti.Id)
+               .UseIdentityColumn();
+           modelBuilder
+               .Entity<TodoItem>()
+               .HasOne(s => s.Day)
+               .WithMany(s => s.Items)
+               .OnDelete(DeleteBehavior.Cascade)
+               .HasForeignKey(t => t.DayId);
+           modelBuilder
+               .Entity<User>()
+               .Metadata.SetIsTableExcludedFromMigrations(true);
+           modelBuilder
+               .Entity<TodoItem>()
+               .HasOne(s => s.User);
             base.OnModelCreating(modelBuilder);
         }
     }

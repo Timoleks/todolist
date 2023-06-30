@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.EntityFrameworkCore;
 using TodolistApi.Domain.Models;
 using TodolistApi.Service.Repository;
 
@@ -37,7 +38,7 @@ public class TodoController : ControllerBase
         try
         {
             var todoItem = new TodoItem { Name = name };
-            todoItem.UserID = userId;
+            todoItem.UserId = userId;
             _repository.Insert(todoItem);
             await _repository.SaveChangesAsync();
             return Ok(todoItem.Id);
@@ -54,12 +55,20 @@ public class TodoController : ControllerBase
     {
         try
         {
+           
             var userId = HttpContext.User.Identities
-            .FirstOrDefault()
-            .Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sub).Value;
+                .FirstOrDefault()
+                .Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sub).Value;
+            var todoitem = new TodoItem();
+            todoitem.UserId = "asd";
+            todoitem.Name = "test";
+            _repository.Insert(todoitem);
+            await _repository.SaveChangesAsync();
 
-
-            return Ok(_repository.Get(userId).Take(5000));
+            return Ok(_repository.Get()
+                .Where(record => userId == record.UserId)
+                .ToArray()
+                .Take(5000));
         }
         catch (Exception ex)
         {
@@ -71,13 +80,18 @@ public class TodoController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetItem(int id)
     {
-        var UserID = HttpContext.User.Identities
+        var userId = HttpContext.User.Identities
             .FirstOrDefault()
             .Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sub).Value;
 
         try
         {
-            var item = _repository.Get(id,UserID);
+            var item = _repository
+                .Get()
+                .Where(record => record.Id == id && userId == record.UserId)
+                .ToArray()
+                .SingleOrDefault();
+
             return 
                 item == null
                     ? NotFound() 
@@ -97,11 +111,15 @@ public class TodoController : ControllerBase
     {
         try
         {
-            var UserID = HttpContext.User.Identities
-            .FirstOrDefault()
-            .Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sub).Value;
+            var userId = HttpContext.User.Identities
+                .FirstOrDefault()
+                .Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sub).Value;
 
-            var item = _repository.Get(id, UserID);
+            var item = _repository.Get()
+                .Where(record => record.Id == id && userId == record.UserId)
+                .ToArray()
+                .SingleOrDefault();
+
             if (item is null)
                 return NotFound();
 
@@ -121,11 +139,15 @@ public class TodoController : ControllerBase
     {
         try
         {
-            var UserID = HttpContext.User.Identities
-            .FirstOrDefault()
-            .Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sub).Value;
+            var userId = HttpContext.User.Identities
+                .FirstOrDefault()
+                .Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sub).Value;
 
-            var item = _repository.Get(id,UserID);
+            var item = _repository.Get()
+                .Where(record => record.Id == id && userId == record.UserId)
+                .ToArray()
+                .SingleOrDefault();
+
             if (item is null)
                 return NotFound();
             item.Name = newName;
