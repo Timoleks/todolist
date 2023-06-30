@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TodolistApi.Domain.Data;
 
@@ -11,9 +12,11 @@ using TodolistApi.Domain.Data;
 namespace TodolistApi.Domain.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230626180949_lehamodel_1.2")]
+    partial class lehamodel_12
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,6 +35,10 @@ namespace TodolistApi.Domain.Migrations
 
                     b.Property<DateTimeOffset>("Date")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("UserID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -62,29 +69,15 @@ namespace TodolistApi.Domain.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("UserID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("DayId");
 
-                    b.HasIndex("UserId");
-
                     b.ToTable("TodoItems");
-                });
-
-            modelBuilder.Entity("TodolistApi.Domain.Models.User", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("AspNetUsers", t =>
-                        {
-                            t.ExcludeFromMigrations();
-                        });
                 });
 
             modelBuilder.Entity("TodolistApi.Domain.Models.TodoItem", b =>
@@ -94,13 +87,7 @@ namespace TodolistApi.Domain.Migrations
                         .HasForeignKey("DayId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("TodolistApi.Domain.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
                     b.Navigation("Day");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TodolistApi.Domain.Models.Day", b =>
