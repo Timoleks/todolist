@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using TodolistApi.Domain.Models;
@@ -38,6 +39,17 @@ namespace TodolistApi.Service.Extensions
                 });
 
             return services;
+        }
+
+        public static IdentityBuilder AddIdentity(this IServiceCollection services)
+        {
+            return services.AddIdentity<User, IdentityRole>(options => {
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 3;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+            });
         }
     }
 }

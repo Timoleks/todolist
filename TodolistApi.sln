@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodolistApi.Service", "Todo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodolistApi.Infrastructure", "TodolistApi.Infrastructure\TodolistApi.Infrastructure.csproj", "{025DCD1E-C2B2-447B-8884-6114ECF8EB48}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodolistApi.TelegramBot", "TodolistApi.TelegramBot\TodolistApi.TelegramBot.csproj", "{B2782369-4E23-432D-BD21-7B34CB53FCD1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{025DCD1E-C2B2-447B-8884-6114ECF8EB48}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{025DCD1E-C2B2-447B-8884-6114ECF8EB48}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{025DCD1E-C2B2-447B-8884-6114ECF8EB48}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2782369-4E23-432D-BD21-7B34CB53FCD1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2782369-4E23-432D-BD21-7B34CB53FCD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2782369-4E23-432D-BD21-7B34CB53FCD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2782369-4E23-432D-BD21-7B34CB53FCD1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
