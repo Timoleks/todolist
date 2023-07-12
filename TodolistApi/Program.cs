@@ -13,6 +13,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+
+#region AddSwaggerGen
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApiDemo", Version = "v1" });
@@ -45,6 +47,8 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
+#endregion
+
 //builder.Services.AddScoped<IRepository<TodoItem>, Repository<TodoItem>>();
 builder.Services.AddTodolistCrudService();
 
@@ -57,13 +61,16 @@ builder.Services
 
 
 builder.Services.AddJwtAuthorization();
-builder.Services.AddIdentity<User, IdentityRole>(options => {
-    options.Password.RequireDigit = false;
-    options.Password.RequiredLength = 3;
-    options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequireUppercase = false;
-    options.Password.RequireLowercase = false;
-}).AddEntityFrameworkStores<ApplicationIdentityDbContext>();
+builder.Services
+    .AddIdentity<User, IdentityRole>(options => {
+        options.Password.RequireDigit = false;
+        options.Password.RequiredLength = 3;
+        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequireUppercase = false;
+        options.Password.RequireLowercase = false;
+    })
+    .AddEntityFrameworkStores<ApplicationIdentityDbContext>();
+
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddHostedService<IdentityRolesInitializer>();
