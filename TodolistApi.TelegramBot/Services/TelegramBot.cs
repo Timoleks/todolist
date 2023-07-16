@@ -83,10 +83,11 @@ public class TelegramBot : BackgroundService
         {
             await botClient.SendTextMessageAsync(
                 chatId: chatId,
-                text: "Invalid command\n",
+                text: $"Invalid command{Environment.NewLine}",
                 cancellationToken: cancellationToken);
             return;
         }
+        
 
         switch (command)
         {
@@ -104,6 +105,9 @@ public class TelegramBot : BackgroundService
                 break;
             case "update":
                 await this.Update(parameters, result);
+                break;
+            default:
+                result.Append("invalid command");
                 break;
         }
 
